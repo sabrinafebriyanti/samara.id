@@ -1,0 +1,262 @@
+﻿      #adminNavigation[hidden],
+      #admin[hidden],
+      #adminLoginScreen[hidden] {
+        display: none !important;
+      }
+      #adminLoginScreen {
+        box-sizing: border-box;
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        padding: 2rem 1rem;
+      }
+      #adminLoginScreen *,
+      #adminLoginScreen *::before,
+      #adminLoginScreen *::after {
+        box-sizing: border-box;
+      }
+      #adminLoginScreen > div {
+        width: min(100%, 28rem);
+        overflow: hidden;
+        border: 1px solid #d1fae5;
+        border-radius: 1.5rem;
+        background: #fff;
+        box-shadow: 0 24px 70px rgba(15, 23, 42, 0.12);
+      }
+      #adminLoginScreen > div > div:first-child {
+        height: 0.5rem;
+        background: #059669;
+      }
+      #adminLoginScreen > div > div:nth-child(2) {
+        padding: clamp(1.5rem, 6vw, 2.5rem);
+      }
+      #adminLoginScreen a {
+        color: #047857;
+        text-decoration: none;
+      }
+      #adminLoginScreen h1 {
+        margin: 2rem 0 0.5rem;
+        color: #111827;
+        font-size: clamp(1.5rem, 4vw, 1.8rem);
+        line-height: 1.25;
+      }
+      #adminLoginScreen p {
+        margin: 0.5rem 0 0;
+        color: #64748b;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+      #adminLoginScreen label {
+        display: block;
+        margin-top: 1rem;
+        color: #374151;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      #adminLoginScreen label span {
+        display: block;
+        margin-bottom: 0.45rem;
+      }
+      #adminLoginScreen input {
+        display: block;
+        width: 100%;
+        min-height: 3rem;
+        padding: 0.75rem 0.9rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 0.75rem;
+        background: #fff;
+        color: #111827;
+        font: inherit;
+      }
+      #adminLoginScreen input:focus {
+        border-color: #059669;
+        outline: 3px solid rgba(16, 185, 129, 0.18);
+      }
+      #adminLoginSubmit {
+        width: 100%;
+        min-height: 3rem;
+        margin-top: 1.25rem;
+        border: 0;
+        border-radius: 0.75rem;
+        background: #059669;
+        color: #fff;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      #adminLoginSubmit:hover {
+        background: #047857;
+      }
+      #adminLoginSubmit:disabled {
+        opacity: 0.65;
+        cursor: wait;
+      }
+      #adminLoginError:not([hidden]) {
+        margin-top: 1rem;
+        padding: 0.8rem 1rem;
+        border: 1px solid #fecaca;
+        border-radius: 0.75rem;
+        background: #fef2f2;
+        color: #b91c1c;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+      .admin-demo-credentials {
+        margin-top: 1.25rem;
+        padding: 0.8rem 1rem;
+        border-radius: 0.75rem;
+        background: #ecfdf5;
+        color: #065f46;
+        font-size: 0.8rem;
+        line-height: 1.6;
+      }
+      .admin-login-back {
+        display: inline-block;
+        margin-top: 1.25rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      .admin-login-background {
+        background: #fff;
+      }
+      .admin-map-wrap {
+        position: relative;
+      }
+      .admin-map-status {
+        position: absolute;
+        z-index: 1000;
+        top: 0.75rem;
+        left: 0.75rem;
+        max-width: min(28rem, calc(100% - 1.5rem));
+        padding: 0.55rem 0.8rem;
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        border-radius: 0.65rem;
+        background: rgba(255, 255, 255, 0.96);
+        color: #334155;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.16);
+        font-size: 0.8rem;
+        font-weight: 650;
+        line-height: 1.4;
+        pointer-events: none;
+      }
+      .admin-map-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.25rem;
+        color: #475569;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .admin-map-legend > span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+      }
+      .admin-map-legend__marker {
+        display: grid;
+        flex: 0 0 1.25rem;
+        width: 1.25rem;
+        height: 1.25rem;
+        place-items: center;
+        border: 2px solid white;
+        border-radius: 50%;
+        color: white;
+        font-size: 0.65rem;
+        font-style: normal;
+        line-height: 1;
+        box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.25);
+      }
+      .admin-map-div-icon {
+        background: transparent;
+        border: 0;
+      }
+      .admin-map-marker {
+        display: grid;
+        width: 2.25rem;
+        height: 2.25rem;
+        place-items: center;
+        border: 3px solid #fff;
+        border-radius: 50% 50% 50% 0;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.45);
+        font-size: 1.05rem;
+        font-weight: 800;
+        transform: rotate(-45deg);
+      }
+      .admin-map-marker > span {
+        transform: rotate(45deg);
+      }
+      .admin-map-marker--new {
+        background: #b45309;
+      }
+      .admin-map-marker--progress {
+        background: #1d4ed8;
+      }
+      .admin-map-marker--done {
+        background: #047857;
+      }
+      .admin-map-marker--category-road,
+      .admin-map-legend__marker--road {
+        background: #dc2626;
+      }
+      .admin-map-marker--category-streetlight,
+      .admin-map-legend__marker--streetlight {
+        background: #d97706;
+      }
+      .admin-map-marker--category-traffic,
+      .admin-map-legend__marker--traffic {
+        background: #7c3aed;
+      }
+      .admin-map-marker--category-drain,
+      .admin-map-legend__marker--drain {
+        background: #0891b2;
+      }
+      .admin-map-marker--category-facility,
+      .admin-map-legend__marker--facility {
+        background: #16a34a;
+      }
+      .admin-map-marker--category-bus-stop,
+      .admin-map-legend__marker--bus-stop {
+        background: #db2777;
+      }
+      .admin-map-marker--category-waste,
+      .admin-map-legend__marker--waste {
+        background: #475569;
+      }
+      .admin-map-marker--category-other,
+      .admin-map-legend__marker--other {
+        background: #64748b;
+      }
+      .admin-map-popup {
+        min-width: 10rem;
+        color: #1f2937;
+      }
+      .admin-map-popup > strong {
+        display: block;
+        margin-bottom: 0.45rem;
+        font-size: 0.9rem;
+      }
+      .admin-map-popup > p {
+        margin: 0 0 0.6rem;
+        color: #475569;
+        font-size: 0.8rem;
+        line-height: 1.45;
+      }
+      .admin-map-popup__status {
+        display: inline-block;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 700;
+      }
+      .admin-map-popup__status--new {
+        background: #b45309;
+      }
+      .admin-map-popup__status--progress {
+        background: #1d4ed8;
+      }
+      .admin-map-popup__status--done {
+        background: #047857;
+      }
+    

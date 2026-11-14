@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Panel petugas SAMARA untuk menindaklanjuti laporan yang ditugaskan"
+    />
+    <title>Panel Petugas - SAMARA</title>
+    <link rel="icon" type="image/png" href="../assets/img/logo%20samara.png" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        min-height: 100vh;
+        background: #f8fafc;
+        color: #1e293b;
+      }
+      .navbar {
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+      }
+      #logoutButton {
+        min-width: 7rem;
+        min-height: 2.5rem;
+      }
+      @media (max-width: 575.98px) {
+        #logoutButton {
+          flex: 0 0 100%;
+        }
+      }
+      .staff-brand-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: #0f172a;
+        text-decoration: none;
+      }
+      .staff-brand-link:hover {
+        color: #0f172a;
+      }
+      .staff-brand-mark {
+        display: block;
+        width: 5rem;
+        height: 2.75rem;
+        padding: 0.1rem;
+        object-fit: contain;
+      }
+      .staff-brand-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+      }
+      .staff-brand-title {
+        font-size: 1.15rem;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+      }
+      .staff-brand-subtitle {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #64748b;
+      }
+      .staff-header,
+      .staff-stat-card,
+      .report-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 1.1rem;
+        background: #fff;
+        box-shadow: 0 8px 26px rgba(15, 23, 42, 0.045);
+      }
+      .staff-header {
+        padding: clamp(1.25rem, 3vw, 2rem);
+      }
+      .staff-eyebrow {
+        color: #047857;
+        font-size: 0.78rem;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .staff-identity {
+        padding: 0.8rem 1rem;
+        border: 1px solid #d1fae5;
+        border-radius: 0.9rem;
+        background: #f0fdf4;
+      }
+      .staff-stat-card {
+        height: 100%;
+        padding: 1rem 1.15rem;
+      }
+      .staff-stat-value {
+        color: #0f172a;
+        font-size: 1.65rem;
+        font-weight: 800;
+        line-height: 1.1;
+      }
+      .staff-stat-label {
+        margin-top: 0.35rem;
+        color: #64748b;
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+      .staff-notification {
+        border: 1px solid #a7f3d0;
+        border-radius: 0.9rem;
+        background: #ecfdf5;
+        color: #065f46;
+      }
+      .staff-notification[hidden] {
+        display: none !important;
+      }
+      .staff-toolbar {
+        padding: 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        background: #fff;
+      }
+      .report-card {
+        overflow: hidden;
+      }
+      .report-card .card-body {
+        padding: clamp(1.15rem, 3vw, 1.5rem);
+      }
+      .report-address {
+        color: #334155;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      .report-contact,
+      .report-location {
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        background: #f8fafc;
+      }
+      .report-contact-link,
+      .report-map-link {
+        color: #047857;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .report-contact-link:hover,
+      .report-map-link:hover {
+        text-decoration: underline;
+      }
+      .staff-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.38rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 750;
+      }
+      .staff-status::before {
+        width: 0.45rem;
+        height: 0.45rem;
+        border-radius: 50%;
+        background: currentColor;
+        content: "";
+      }
+      .staff-status--Diterima {
+        background: #fef9c3;
+        color: #854d0e;
+      }
+      .staff-status--Diproses {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .staff-status--Selesai {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .staff-evidence {
+        padding: 1rem;
+        border: 1px dashed #cbd5e1;
+        border-radius: 0.85rem;
+        background: #f8fafc;
+      }
+      .staff-evidence-preview {
+        width: 8rem;
+        height: 8rem;
+        margin-top: 0.75rem;
+        border-radius: 0.65rem;
+        object-fit: cover;
+      }
+      .staff-empty-state {
+        padding: 3rem 1rem;
+        border: 1px dashed #cbd5e1;
+        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.8);
+        text-align: center;
+      }
+      .btn-success {
+        --bs-btn-bg: #059669;
+        --bs-btn-border-color: #059669;
+        --bs-btn-hover-bg: #047857;
+        --bs-btn-hover-border-color: #047857;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar shadow-sm">
+      <div class="container py-2">
+        <a class="staff-brand-link" href="petugas.html">
+          <img class="staff-brand-mark" src="../assets/img/logo%20samara.png" alt="Logo SAMARA" />
+          <span class="staff-brand-text">
+            <span class="staff-brand-title">SAMARA</span>
+            <span class="staff-brand-subtitle">Panel Petugas</span>
+          </span>
+        </a>
+        <button
+          type="button"
+          class="btn btn-outline-danger btn-sm fw-semibold"
+          id="logoutButton"
+        >
+          Keluar
+        </button>
+      </div>
+    </nav>
+    <main class="container py-4 py-md-5">
+      <div
+        class="staff-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-4 mb-4"
+      >
+        <div>
+          <p class="staff-eyebrow mb-2">Ruang kerja petugas</p>
+          <h1 class="h3 fw-bold mb-2">Laporan yang ditugaskan</h1>
+          <p class="text-secondary mb-0">Kelola progres, catatan, dan foto bukti pengerjaan.</p>
+        </div>
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-3">
+          <div class="staff-identity">
+            <div id="staffName" class="fw-semibold"></div>
+            <div id="staffEmail" class="small text-secondary"></div>
+          </div>
+          <button type="button" class="btn btn-outline-success" id="refreshReportsButton">
+            Segarkan
+          </button>
+        </div>
+      </div>
+      <div id="staffNotification" class="staff-notification alert d-flex justify-content-between align-items-center gap-3 mb-4" role="status" aria-live="polite" hidden>
+        <span id="staffNotificationMessage"></span>
+        <button type="button" class="btn-close" id="dismissNotificationButton" aria-label="Tutup notifikasi"></button>
+      </div>
+      <div id="pageError" class="alert alert-danger" role="alert" hidden></div>
+      <section class="row g-3 mb-4" aria-label="Ringkasan laporan petugas">
+        <div class="col-6 col-xl-3"><div class="staff-stat-card"><div class="staff-stat-value" id="statTotal">—</div><div class="staff-stat-label">Total tugas</div></div></div>
+        <div class="col-6 col-xl-3"><div class="staff-stat-card"><div class="staff-stat-value" id="statNew">—</div><div class="staff-stat-label">Laporan baru</div></div></div>
+        <div class="col-6 col-xl-3"><div class="staff-stat-card"><div class="staff-stat-value" id="statInProgress">—</div><div class="staff-stat-label">Sedang diproses</div></div></div>
+        <div class="col-6 col-xl-3"><div class="staff-stat-card"><div class="staff-stat-value" id="statDone">—</div><div class="staff-stat-label">Selesai</div></div></div>
+      </section>
+      <div class="staff-toolbar d-flex flex-column flex-md-row gap-2 mb-4">
+        <label class="visually-hidden" for="reportSearch">Cari laporan</label>
+        <input type="search" class="form-control" id="reportSearch" placeholder="Cari ID, kategori, alamat...">
+        <label class="visually-hidden" for="reportStatusFilter">Filter status</label>
+        <select class="form-select" id="reportStatusFilter" style="max-width: 13rem">
+          <option value="">Semua status</option>
+          <option value="Diterima">Laporan baru</option>
+          <option value="Diproses">Diproses</option>
+          <option value="Selesai">Selesai</option>
+        </select>
+        <label class="visually-hidden" for="reportSort">Urutkan laporan</label>
+        <select class="form-select" id="reportSort" style="max-width: 13rem">
+          <option value="newest">Terbaru</option>
+          <option value="oldest">Terlama</option>
+        </select>
+      </div>
+      <div id="reportList" class="row g-3">
+        <div class="col-12">
+          <div class="text-center text-secondary py-5">Memuat laporan...</div>
+        </div>
+      </div>
+    </main>
+    <script>
+      (function () {
+        const SESSION_KEY = 'smartwarga.session';
+        const REPORTS_KEY = 'smartwarga.reports';
+        const reportList = document.getElementById('reportList');
+        const pageError = document.getElementById('pageError');
+        const notification = document.getElementById('staffNotification');
+        const notificationMessage = document.getElementById('staffNotificationMessage');
+        const searchInput = document.getElementById('reportSearch');
+        const statusFilter = document.getElementById('reportStatusFilter');
+        const sortSelect = document.getElementById('reportSort');
+        const validStatuses = ['Diterima', 'Diproses', 'Selesai'];
+        let allReports = [];
+        let currentStaffEmail = '';
+
+        function escapeHtml(value) {
+          return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {
+            return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+          });
+        }
+        function getSession() {
+          try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (_) { return null; }
+        }
+        function getReports() {
+          try {
+            const reports = JSON.parse(localStorage.getItem(REPORTS_KEY) || '[]');
+            return Array.isArray(reports) ? reports : [];
+          } catch (_) { return []; }
+        }
+        function saveReports(reports) {
+          localStorage.setItem(REPORTS_KEY, JSON.stringify(reports));
+        }
+        function formatDate(value) {
+          if (!value) return 'Tanggal tidak tersedia';
+          const date = new Date(value);
+          return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString('id-ID');
+        }
+        function showNotification(message) {
+          notificationMessage.textContent = message;
+          notification.hidden = false;
+        }
+        function updateSummary(reports) {
+          document.getElementById('statTotal').textContent = String(reports.length);
+          document.getElementById('statNew').textContent = String(reports.filter(r => r.status === 'Diterima').length);
+          document.getElementById('statInProgress').textContent = String(reports.filter(r => r.status === 'Diproses').length);
+          document.getElementById('statDone').textContent = String(reports.filter(r => r.status === 'Selesai').length);
+        }
+        function renderReports() {
+          updateSummary(allReports);
+          const query = searchInput.value.trim().toLocaleLowerCase('id');
+          const selectedStatus = statusFilter.value;
+          const reports = allReports.filter((report) => {
+            const searchable = [report.id, report.kategori, report.nama, report.alamat, report.deskripsi].join(' ').toLocaleLowerCase('id');
+            return (!query || searchable.includes(query)) && (!selectedStatus || report.status === selectedStatus);
+          });
+          reports.sort((left, right) => {
+            const l = Date.parse(left.created_at || left.tanggal || '') || Number(left.id) || 0;
+            const r = Date.parse(right.created_at || right.tanggal || '') || Number(right.id) || 0;
+            return sortSelect.value === 'oldest' ? l - r : r - l;
+          });
+          if (!reports.length) {
+            const emptyMessage = allReports.length
+              ? 'Tidak ada laporan yang cocok dengan pencarian atau filter.'
+              : 'Belum ada laporan yang ditugaskan ke akun ini. Minta admin menugaskan laporan ke petugas@samara.com.';
+            reportList.innerHTML = `<div class="col-12"><div class="staff-empty-state"><h2 class="h5 fw-bold">${allReports.length ? 'Laporan tidak ditemukan' : 'Belum ada laporan ditugaskan'}</h2><p class="mb-0 text-secondary">${emptyMessage}</p></div></div>`;
+            return;
+          }
+          reportList.innerHTML = reports.map(function (report) {
+            const status = validStatuses.includes(report.status) ? report.status : 'Diterima';
+            const reportId = escapeHtml(report.id);
+            const phoneDigits = String(report.whatsapp || '').replace(/\D/g, '');
+            const whatsappNumber = phoneDigits.startsWith('0') ? `62${phoneDigits.slice(1)}` : phoneDigits.startsWith('8') ? `62${phoneDigits}` : phoneDigits;
+            const whatsappLink = /^\d{8,15}$/.test(whatsappNumber) ? `https://wa.me/${whatsappNumber}` : '';
+            const latitude = Number(report.lat), longitude = Number(report.lng);
+            const hasCoordinates = Number.isFinite(latitude) && Number.isFinite(longitude);
+            const mapLink = hasCoordinates ? `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=17/${latitude}/${longitude}` : '';
+            return `
+              <div class="col-12 col-xl-6">
+                <article class="card report-card h-100"><div class="card-body d-flex flex-column">
+                  <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <div><div class="small fw-semibold text-secondary">LAPORAN #${reportId}</div><h2 class="h5 fw-bold mt-1 mb-0">${escapeHtml(report.kategori || 'Laporan warga')}</h2></div>
+                    <span class="staff-status staff-status--${status}">${status}</span>
+                  </div>
+                  <p class="small text-secondary mb-3">${escapeHtml(report.nama || 'Warga')} • ${escapeHtml(formatDate(report.created_at || report.tanggal))}</p>
+                  <div class="report-contact mb-3"><div class="small fw-semibold text-secondary mb-1">Kontak pelapor</div>${whatsappLink ? `<a class="report-contact-link" href="${whatsappLink}" target="_blank" rel="noopener noreferrer">Chat WhatsApp • ${escapeHtml(report.whatsapp)}</a>` : '<span class="small text-secondary">Nomor WhatsApp belum dicantumkan.</span>'}</div>
+                  <div class="mb-3"><div class="small fw-semibold text-secondary mb-1">Alamat</div><div class="report-address">${escapeHtml(report.alamat || '-')}</div></div>
+                  <div class="report-location mb-3"><div class="small fw-semibold text-secondary mb-1">Titik lokasi</div>${mapLink ? `<a class="report-map-link" href="${mapLink}" target="_blank" rel="noopener noreferrer">${latitude.toFixed(6)}, ${longitude.toFixed(6)} • Buka peta</a>` : '<span class="small text-secondary">Koordinat tidak tersedia.</span>'}</div>
+                  <div class="mb-4"><div class="small fw-semibold text-secondary mb-1">Deskripsi</div><div class="report-address">${escapeHtml(report.deskripsi || 'Tidak ada deskripsi.')}</div></div>
+                  <form class="staff-update-form mt-auto border-top pt-3" data-report-id="${reportId}" data-has-evidence="${report.foto_pengerjaan ? 'true' : 'false'}">
+                    <label class="form-label small fw-semibold" for="staffStatus${reportId}">Status tindak lanjut</label>
+                    <select class="form-select mb-3" id="staffStatus${reportId}" name="status">${validStatuses.map(item => `<option value="${item}"${item === status ? ' selected' : ''}>${item}</option>`).join('')}</select>
+                    <label class="form-label small fw-semibold" for="staffNote${reportId}">Catatan petugas</label>
+                    <textarea class="form-control mb-3" id="staffNote${reportId}" name="note" rows="2" maxlength="500" placeholder="Catatan perkembangan (opsional)"></textarea>
+                    <div class="staff-evidence mb-3">
+                      <label class="form-label small fw-semibold mb-1" for="staffEvidence${reportId}">Foto bukti pengerjaan</label>
+                      <input class="form-control staff-evidence-input" id="staffEvidence${reportId}" name="evidence" type="file" accept="image/jpeg,image/png">
+                      <div class="form-text">JPG/PNG, maks. 2 MB. Wajib saat status Selesai (jika belum ada bukti).</div>
+                      ${report.foto_pengerjaan ? '<div class="small text-success mt-2">Bukti pengerjaan sudah tersimpan.</div>' : ''}
+                      <img class="staff-evidence-preview w-100" alt="Pratinjau foto bukti" hidden>
+                    </div>
+                    <div class="staff-form-error text-danger small mb-2" role="alert" hidden></div>
+                    <button type="submit" class="btn btn-success w-100 fw-semibold">Simpan pembaruan</button>
+                  </form>
+                </div></article>
+              </div>`;
+          }).join('');
+        }
+        function loadReports() {
+          const reports = getReports();
+          allReports = reports.filter(r => String(r.assigned_to || '').trim().toLowerCase() === currentStaffEmail);
+          renderReports();
+        }
+        function readImageAsDataUrl(file) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('Foto bukti tidak dapat dibaca.'));
+            reader.readAsDataURL(file);
+          });
+        }
+        reportList.addEventListener('change', function (event) {
+          const input = event.target.closest('.staff-evidence-input');
+          if (!input) return;
+          const preview = input.form.querySelector('.staff-evidence-preview');
+          const file = input.files[0];
+          if (!file) { preview.hidden = true; preview.removeAttribute('src'); return; }
+          if (!['image/jpeg','image/png'].includes(file.type) || file.size > 2*1024*1024) {
+            input.value = ''; preview.hidden = true; showNotification('Foto harus JPG/PNG maksimal 2 MB.'); return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => { preview.src = reader.result; preview.hidden = false; };
+          reader.readAsDataURL(file);
+        });
+        reportList.addEventListener('submit', async function (event) {
+          const form = event.target.closest('.staff-update-form');
+          if (!form) return;
+          event.preventDefault();
+          const submitButton = form.querySelector('button[type="submit"]');
+          const error = form.querySelector('.staff-form-error');
+          submitButton.disabled = true; error.hidden = true;
+          try {
+            const formData = new FormData(form);
+            const evidenceFile = formData.get('evidence');
+            const status = String(formData.get('status') || '');
+            const note = String(formData.get('note') || '').trim();
+            const reportId = form.dataset.reportId;
+            const reports = getReports();
+            const idx = reports.findIndex(r => String(r.id) === String(reportId));
+            if (idx < 0) throw new Error('Laporan tidak ditemukan.');
+            const report = reports[idx];
+            if (String(report.assigned_to || '').trim().toLowerCase() !== currentStaffEmail) throw new Error('Bukan tugas Anda.');
+            let evidence = null;
+            if (evidenceFile && evidenceFile.size > 0) {
+              if (!['image/jpeg','image/png'].includes(evidenceFile.type)) throw new Error('Foto harus JPG/PNG.');
+              if (evidenceFile.size > 2*1024*1024) throw new Error('Ukuran foto maksimal 2 MB.');
+              evidence = await readImageAsDataUrl(evidenceFile);
+            }
+            if (status === 'Selesai' && !evidence && !report.foto_pengerjaan) {
+              throw new Error('Unggah foto bukti pengerjaan sebelum menandai laporan selesai.');
+            }
+            const changedAt = new Date().toISOString();
+            report.status = status;
+            if (evidence) { report.foto_pengerjaan = evidence; report.has_foto_pengerjaan = true; }
+            if (status === 'Selesai' && !report.completed_at) report.completed_at = changedAt;
+            if (status !== 'Selesai') report.completed_at = null;
+            report.status_history = Array.isArray(report.status_history) ? report.status_history : [];
+            let historyNote = note;
+            if (evidence) historyNote = historyNote ? (historyNote + '\nFoto bukti pengerjaan diunggah.') : 'Foto bukti pengerjaan diunggah.';
+            report.status_history.unshift({ status, note: historyNote, assigned_to: report.assigned_to, changed_at: changedAt });
+            saveReports(reports);
+            loadReports();
+            showNotification('Pembaruan laporan berhasil disimpan (versi statis).');
+          } catch (exception) {
+            error.textContent = exception.message || 'Pembaruan gagal disimpan.';
+            error.hidden = false;
+          } finally {
+            submitButton.disabled = false;
+          }
+        });
+        searchInput.addEventListener('input', renderReports);
+        statusFilter.addEventListener('change', renderReports);
+        sortSelect.addEventListener('change', renderReports);
+        document.getElementById('refreshReportsButton').addEventListener('click', function(){ loadReports(); });
+        document.getElementById('dismissNotificationButton').addEventListener('click', function(){ notification.hidden = true; });
+        document.getElementById('logoutButton').addEventListener('click', function(){
+          localStorage.removeItem(SESSION_KEY);
+          window.location.replace('../index.html');
+        });
+
+        const session = getSession();
+        if (!session || !session.role) { window.location.replace('admin.html'); return; }
+        if (session.role !== 'petugas') { window.location.replace(session.role === 'admin' ? 'admin.html' : 'admin.html'); return; }
+        currentStaffEmail = String(session.email || '').trim().toLowerCase();
+        document.getElementById('staffName').textContent = session.display_name || 'Petugas';
+        document.getElementById('staffEmail').textContent = session.email || '';
+        loadReports();
+      })();
+    </script>
+
+  </body>
+</html>

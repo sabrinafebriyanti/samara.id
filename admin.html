@@ -1,0 +1,812 @@
+﻿<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Dasbor admin SAMARA untuk memantau dan menindaklanjuti laporan fasilitas publik."
+    />
+    <title>Dasbor Admin - SAMARA</title>
+    <link
+      rel="icon"
+      type="image/png"
+      href="../assets/img/logo%20samara.png"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- SheetJS untuk Ekspor Excel -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+      integrity="sha256-yVBhl8r4CaB1tt7h2g02+xnacVj/6KiOewyWxdhiPJk="
+      crossorigin=""
+    ></script>
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="../css/admin.css" />
+  </head>
+  <body class="bg-gray-50 text-gray-800 font-sans antialiased">
+    <section
+      id="adminLoginScreen"
+      class="admin-login-background min-h-screen flex items-center justify-center px-4 py-10"
+      aria-labelledby="adminLoginTitle"
+    >
+      <div
+        class="w-full max-w-md overflow-hidden rounded-3xl border border-emerald-100 bg-white shadow-xl"
+      >
+        <div class="h-2 bg-emerald-600"></div>
+        <div class="p-6 sm:p-9">
+          <a
+            href="../index.html"
+            class="inline-flex items-center gap-3 text-decoration-none"
+          >
+            <img
+              src="../assets/img/logo%20samara.png"
+              alt=""
+              class="h-12 w-20 object-contain"
+            >
+            <span>
+              <span class="block text-xl font-bold tracking-tight text-gray-900"
+                >SAMARA</span
+              >
+              <span class="block text-sm text-gray-500"
+                >Portal pengelola wilayah</span
+              >
+            </span>
+          </a>
+          <h1
+            id="adminLoginTitle"
+            class="mt-8 text-2xl font-bold text-gray-900"
+          >
+            Masuk ke SAMARA
+          </h1>
+          <p class="mt-2 text-sm leading-6 text-gray-500">
+            Gunakan akun admin untuk mengelola laporan atau akun petugas untuk
+            melihat tugas lapangan.
+          </p>
+
+          <div
+            id="adminLoginError"
+            class="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            role="alert"
+            hidden
+          ></div>
+
+          <form id="adminLoginForm" class="mt-6 space-y-4">
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-semibold text-gray-700"
+                >Email akun</span
+              >
+              <input
+                id="adminLoginEmail"
+                name="email"
+                type="email"
+                autocomplete="username"
+                required
+                maxlength="254"
+                placeholder="admin@samara.com atau petugas@samara.com"
+                class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+              />
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-sm font-semibold text-gray-700"
+                >Kata sandi</span
+              >
+              <input
+                id="adminLoginPassword"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+                maxlength="1024"
+                placeholder="Masukkan kata sandi"
+                class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+              />
+              <button
+                id="adminLoginPasswordToggle"
+                type="button"
+                class="mt-2 text-sm font-semibold text-emerald-700 hover:text-emerald-800"
+                aria-controls="adminLoginPassword"
+                aria-pressed="false"
+              >
+                Lihat kata sandi
+              </button>
+            </label>
+            <button
+              id="adminLoginSubmit"
+              type="submit"
+              class="w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-200 disabled:cursor-wait disabled:opacity-60"
+            >
+              Masuk
+            </button>
+          </form>
+
+          <div class="admin-demo-credentials">
+            <strong>Akun demo (versi statis)</strong><br />
+            Admin: admin@samara.com / petugas123<br />
+            Petugas: petugas@samara.com / petugas123<br />
+            <span style="font-size:12px;color:#64748b;">Data disimpan di browser (localStorage), tanpa server/database.</span>
+          </div>
+          <a
+            href="../index.html"
+            class="mt-6 inline-flex text-sm font-semibold text-emerald-700 hover:text-emerald-800"
+            >← Kembali ke halaman warga</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Navbar Admin -->
+    <nav
+      id="adminNavigation"
+      hidden
+      class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="flex flex-wrap justify-between items-center min-h-16 py-3 gap-3"
+        >
+          <div class="flex items-center gap-2">
+            <img
+              src="../assets/img/logo%20samara.png"
+              alt=""
+              class="h-12 w-20 object-contain mix-blend-multiply"
+            />
+            <a
+              href="admin.html"
+              class="font-bold text-xl text-gray-900 tracking-tight"
+            >
+              SAMARA
+            </a>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 sm:gap-4">
+            <a
+              href="#data-warga"
+              class="text-sm font-medium text-gray-500 hover:text-emerald-600"
+              >Data Warga</a
+            >
+            <a
+              href="../index.html"
+              class="text-sm font-medium text-gray-500 hover:text-emerald-600"
+              >Kembali ke Web Warga</a
+            >
+            <div id="adminNotificationMenu" class="relative">
+              <button
+                type="button"
+                id="adminNotificationToggle"
+                class="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 hover:text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                aria-label="Buka notifikasi admin"
+                aria-expanded="false"
+                aria-controls="adminNotificationsPanel"
+              >
+                <svg
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 0 0-4.5-5.8V4a1.5 1.5 0 0 0-3 0v1.2A6 6 0 0 0 6 11v3.2a2 2 0 0 1-.6 1.4L4 17h5m6 0a3 3 0 0 1-6 0m6 0H9"
+                  />
+                </svg>
+                <span
+                  id="adminNotificationsCount"
+                  class="hidden absolute -right-0.5 -top-0.5 min-w-5 h-5 px-1 rounded-full bg-red-600 text-white text-[11px] font-bold leading-5 text-center"
+                  aria-label="0 laporan baru"
+                  >0</span
+                >
+              </button>
+              <div
+                id="adminNotificationsPanel"
+                class="hidden absolute right-0 top-full z-[60] mt-3 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl"
+              >
+                <div class="border-b border-gray-100 px-5 py-4">
+                  <h2 class="font-bold text-gray-900">Notifikasi</h2>
+                  <p class="mt-1 text-xs text-gray-500">
+                    Laporan baru yang perlu ditinjau
+                  </p>
+                </div>
+                <ul
+                  id="adminNotificationsList"
+                  class="max-h-80 divide-y divide-gray-100 overflow-y-auto"
+                  aria-live="polite"
+                >
+                  <li class="p-5 text-sm text-gray-500">
+                    Memuat notifikasi...
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <button
+              type="button"
+              id="btnLogoutAdmin"
+              class="inline-flex min-h-10 w-full items-center justify-center whitespace-nowrap rounded-full bg-red-50 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-100 cursor-pointer sm:w-auto"
+            >
+              Keluar
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content Admin -->
+    <main
+      id="admin"
+      hidden
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 space-y-6 md:space-y-8"
+    >
+      <header class="space-y-2">
+        <p
+          class="text-sm font-semibold uppercase tracking-wider text-emerald-700"
+        >
+          Dasbor pengelola
+        </p>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
+          Pemantauan Wilayah
+        </h1>
+        <p class="text-sm sm:text-base text-gray-500">
+          Pantau titik lokasi laporan warga dan kelola tindak lanjut fasilitas
+          publik.
+        </p>
+      </header>
+
+      <!-- Statistik Cards -->
+      <section
+        aria-label="Ringkasan laporan"
+        class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"
+      >
+        <div
+          class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex items-center gap-4"
+        >
+          <div
+            class="w-12 h-12 shrink-0 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl"
+          >
+            📄
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Total Laporan</p>
+            <p
+              id="adminStatTotal"
+              class="text-2xl font-bold text-gray-900 mt-1"
+            >
+              0
+            </p>
+          </div>
+        </div>
+        <div
+          class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex items-center gap-4"
+        >
+          <div
+            class="w-12 h-12 shrink-0 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl"
+          >
+            👥
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Warga Aktif</p>
+            <p
+              id="adminStatWarga"
+              class="text-2xl font-bold text-gray-900 mt-1"
+            >
+              0
+            </p>
+          </div>
+        </div>
+        <div
+          class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex items-center gap-4"
+        >
+          <div
+            class="w-12 h-12 shrink-0 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl"
+          >
+            ⚙️
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Sedang Diproses</p>
+            <p
+              id="adminStatDiproses"
+              class="text-2xl font-bold text-gray-900 mt-1"
+            >
+              0
+            </p>
+          </div>
+        </div>
+        <div
+          class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm flex items-center gap-4"
+        >
+          <div
+            class="w-12 h-12 shrink-0 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl"
+          >
+            ✅
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Selesai Ditangani</p>
+            <p
+              id="adminStatSelesai"
+              class="text-2xl font-bold text-gray-900 mt-1"
+            >
+              0
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
+        aria-labelledby="adminMonthlyTrafficTitle"
+      >
+        <div class="p-4 sm:p-6 border-b border-gray-100">
+          <h2
+            id="adminMonthlyTrafficTitle"
+            class="text-lg font-bold text-gray-900"
+          >
+            Trafik Laporan Bulanan
+          </h2>
+          <p class="text-sm text-gray-500 mt-1">
+            Jumlah laporan masuk per bulan selama 12 bulan terakhir.
+          </p>
+        </div>
+        <div
+          id="adminMonthlyTraffic"
+          class="p-4 sm:p-6"
+          role="img"
+          aria-label="Grafik jumlah laporan per bulan"
+        >
+          <p class="text-sm text-gray-500">Memuat trafik laporan...</p>
+        </div>
+      </section>
+
+      <section
+        class="grid grid-cols-1 xl:grid-cols-3 gap-4"
+        aria-label="Analitik laporan"
+      >
+        <div
+          class="xl:col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
+          aria-labelledby="adminCategoryTrafficTitle"
+        >
+          <div class="p-4 sm:p-6 border-b border-gray-100">
+            <h2
+              id="adminCategoryTrafficTitle"
+              class="text-lg font-bold text-gray-900"
+            >
+              Laporan per Kategori
+            </h2>
+            <p class="text-sm text-gray-500 mt-1">
+              Kategori yang paling banyak dilaporkan.
+            </p>
+          </div>
+          <div
+            id="adminCategoryTraffic"
+            class="p-4 sm:p-6 space-y-4"
+            role="img"
+            aria-label="Grafik jumlah laporan per kategori"
+          >
+            <p class="text-sm text-gray-500">Memuat analitik kategori...</p>
+          </div>
+        </div>
+        <div
+          class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 sm:p-6"
+          aria-labelledby="adminResponseTimeTitle"
+        >
+          <h2
+            id="adminResponseTimeTitle"
+            class="text-lg font-bold text-gray-900"
+          >
+            Waktu Penyelesaian
+          </h2>
+          <p class="text-sm text-gray-500 mt-1">
+            Rata-rata waktu dari laporan masuk hingga selesai.
+          </p>
+          <p
+            id="adminAverageResponseTime"
+            class="mt-6 text-3xl font-bold text-emerald-700"
+          >
+            —
+          </p>
+          <p id="adminResponseTimeSamples" class="mt-2 text-xs text-gray-500">
+            Menunggu data selesai
+          </p>
+        </div>
+      </section>
+
+      <!-- Peta Wilayah Leaflet -->
+      <section
+        class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
+      >
+        <div
+          class="p-4 sm:p-6 border-b border-gray-100 flex flex-col items-start gap-4"
+        >
+          <div>
+            <h2 class="text-lg font-bold text-gray-900">
+              Peta Titik Rawan & Aduan
+            </h2>
+            <p class="text-sm text-gray-500 mt-1">
+              Pilih status untuk menyaring titik laporan di peta.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-2" aria-label="Filter status laporan">
+            <button
+              type="button"
+              class="filter-btn active px-4 py-2 rounded-full text-sm font-medium bg-emerald-600 text-white shadow-sm"
+              data-filter="all"
+            >
+              Semua
+            </button>
+            <button
+              type="button"
+              class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200"
+              data-filter="Diterima"
+            >
+              Laporan Baru
+            </button>
+            <button
+              type="button"
+              class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200"
+              data-filter="Diproses"
+            >
+              Diproses
+            </button>
+            <button
+              type="button"
+              class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200"
+              data-filter="Selesai"
+            >
+              Selesai
+            </button>
+            <button
+              type="button"
+              id="adminMapRefresh"
+              class="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Segarkan peta
+            </button>
+          </div>
+          <div
+            class="admin-map-legend"
+            aria-label="Keterangan kategori kerusakan"
+          >
+            <span
+              ><i
+                class="admin-map-legend__marker admin-map-legend__marker--road"
+                aria-hidden="true"
+                >↔</i
+              >Jalan rusak</span
+            >
+            <span
+              ><i
+                class="admin-map-legend__marker admin-map-legend__marker--streetlight"
+                aria-hidden="true"
+                >💡</i
+              >Lampu penerangan mati</span
+            >
+            <span
+              ><i
+                class="admin-map-legend__marker admin-map-legend__marker--traffic"
+                aria-hidden="true"
+                >🚦</i
+              >Lampu lalu lintas mati</span
+            >
+            <span
+              ><i
+                class="admin-map-legend__marker admin-map-legend__marker--drain"
+                aria-hidden="true"
+                >≋</i
+              >Drainase tersumbat</span
+            >
+            <span
+              ><i
+                class="admin-map-legend__marker admin-map-legend__marker--facility"
+                aria-hidden="true"
+                >◆</i
+              >Fasilitas umum rusak</span
+            >
+            <span
+              ><i
+                class="admin-map-legend__marker admin-map-legend__marker--bus-stop"
+                aria-hidden="true"
+                >🚏</i
+              >Halte rusak</span
+            >
+            <span
+              ><i
+                class="admin-map-legend__marker admin-map-legend__marker--waste"
+                aria-hidden="true"
+                >♻</i
+              >Penumpukan sampah</span
+            >
+            <span
+              ><i
+                class="admin-map-legend__marker admin-map-legend__marker--other"
+                aria-hidden="true"
+                >?</i
+              >Lainnya</span
+            >
+          </div>
+        </div>
+        <div class="admin-map-wrap">
+          <div
+            id="mapStatus"
+            class="admin-map-status"
+            role="status"
+            aria-live="polite"
+          >
+            Menyiapkan peta...
+          </div>
+          <div
+            id="mapFull"
+            class="w-full bg-gray-50 relative z-0"
+            role="application"
+            aria-label="Peta lokasi laporan warga"
+            style="height: clamp(320px, 52vw, 450px)"
+          ></div>
+        </div>
+      </section>
+
+      <!-- Tabel Detail Laporan -->
+      <section
+        id="daftar-laporan"
+        class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
+      >
+        <div
+          class="p-4 sm:p-6 border-b border-gray-100 flex flex-col items-start gap-4"
+        >
+          <div>
+            <h2 class="text-lg font-bold text-gray-900">
+              Daftar Detail Laporan
+            </h2>
+            <p class="text-sm text-gray-500 mt-1">
+              Cari laporan atau perbarui status tindak lanjut.
+            </p>
+          </div>
+          <div
+            class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full"
+          >
+            <div class="relative w-full sm:flex-1">
+              <span
+                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"
+                aria-hidden="true"
+                >🔍</span
+              >
+              <input
+                type="search"
+                id="adminSearch"
+                aria-label="Cari laporan admin"
+                placeholder="Cari ID, nama, kategori..."
+                class="pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-full"
+              />
+            </div>
+            <button
+              type="button"
+              id="btnExportExcel"
+              class="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 text-white text-sm font-medium rounded-xl shadow-sm hover:bg-emerald-700 transition-colors whitespace-nowrap"
+            >
+              <span>📥</span> Ekspor Excel
+            </button>
+          </div>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full"
+          >
+            <label class="text-xs font-medium text-gray-600">
+              Dari tanggal
+              <input
+                type="date"
+                id="adminDateFrom"
+                class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </label>
+            <label class="text-xs font-medium text-gray-600">
+              Sampai tanggal
+              <input
+                type="date"
+                id="adminDateTo"
+                class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </label>
+            <label class="text-xs font-medium text-gray-600">
+              Kategori
+              <select
+                id="adminCategoryFilter"
+                class="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+                <option value="">Semua kategori</option>
+              </select>
+            </label>
+            <div class="flex items-end">
+              <button
+                type="button"
+                id="adminClearFilters"
+                class="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+              >
+                Hapus filter
+              </button>
+            </div>
+            <p
+              id="adminFilterError"
+              class="hidden text-sm text-red-600 sm:col-span-2 lg:col-span-4"
+              role="alert"
+            ></p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table
+            class="data-table w-full min-w-[900px] text-left border-collapse"
+          >
+            <thead>
+              <tr
+                class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200"
+              >
+                <th scope="col" class="px-6 py-4 font-semibold">ID</th>
+                <th scope="col" class="px-6 py-4 font-semibold">Pelapor</th>
+                <th scope="col" class="px-6 py-4 font-semibold">
+                  Hari, Tanggal &amp; Jam
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold">Kategori</th>
+                <th scope="col" class="px-6 py-4 font-semibold">Foto Bukti</th>
+                <th scope="col" class="px-6 py-4 font-semibold">
+                  Alamat Lokasi
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold">Petugas</th>
+                <th scope="col" class="px-6 py-4 font-semibold">Status</th>
+                <th scope="col" class="px-6 py-4 font-semibold text-right">
+                  Aksi
+                </th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody" class="divide-y divide-gray-100 text-sm">
+              <!-- Render dari script.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section
+        id="data-warga"
+        class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
+        aria-labelledby="adminCitizensTitle"
+      >
+        <div class="p-4 sm:p-6 border-b border-gray-100">
+          <h2 id="adminCitizensTitle" class="text-lg font-bold text-gray-900">
+            Data Warga
+          </h2>
+          <p class="mt-1 text-sm text-gray-500">
+            Direktori warga unik berdasarkan email pada laporan. Ini bukan
+            daftar akun terverifikasi.
+          </p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[640px] text-left border-collapse">
+            <thead>
+              <tr
+                class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200"
+              >
+                <th scope="col" class="px-6 py-4 font-semibold">Nama</th>
+                <th scope="col" class="px-6 py-4 font-semibold">Email</th>
+                <th scope="col" class="px-6 py-4 font-semibold">
+                  Jumlah Laporan
+                </th>
+                <th scope="col" class="px-6 py-4 font-semibold">
+                  Laporan Terakhir
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              id="adminCitizensTableBody"
+              class="divide-y divide-gray-100 text-sm"
+            >
+              <tr>
+                <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                  Memuat data warga...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <div
+      id="adminReportModal"
+      class="hidden fixed inset-0 z-[100] overflow-y-auto bg-slate-900/60 p-4 sm:p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="adminReportModalTitle"
+    >
+      <div
+        class="mx-auto my-4 w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+      >
+        <div
+          class="flex items-start justify-between gap-4 border-b border-gray-100 px-5 py-4 sm:px-7"
+        >
+          <div>
+            <p
+              class="text-xs font-semibold uppercase tracking-wider text-emerald-700"
+            >
+              Detail aduan warga
+            </p>
+            <h2
+              id="adminReportModalTitle"
+              class="mt-1 text-xl font-bold text-gray-900"
+            >
+              Detail Laporan
+            </h2>
+          </div>
+          <button
+            type="button"
+            id="adminReportModalClose"
+            class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100"
+            aria-label="Tutup detail laporan"
+          >
+            ✕
+          </button>
+        </div>
+        <div
+          id="adminReportModalContent"
+          class="grid gap-6 p-5 sm:p-7 lg:grid-cols-2"
+        >
+          <p class="text-sm text-gray-500">Memuat detail laporan...</p>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.all.min.js"
+      integrity="sha256-Tobw4i5HcbW4qsJMYTxmGAameLGvooTQPPatA9PiGgo="
+      crossorigin=""
+    ></script>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="../js/core.js" defer></script>
+    <script src="../js/home.js" defer></script>
+    <script src="../js/form.js" defer></script>
+    <script src="../js/admin-data.js" defer></script>
+    <script src="../js/admin-render.js" defer></script>
+    <script src="../js/admin-detail.js" defer></script>
+    <script src="../js/admin-init.js" defer></script>
+    <script src="../js/track.js" defer></script>
+    <script src="../js/map.js" defer></script>
+    <script src="../js/main.js" defer></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Tombol Ekspor Excel
+        const btnExportExcel = document.getElementById("btnExportExcel");
+        if (btnExportExcel) {
+          btnExportExcel.addEventListener("click", function () {
+            const table = document.querySelector(".data-table");
+            if (!table) return alert("Tabel data tidak ditemukan!");
+            const wb = XLSX.utils.table_to_book(table, {
+              sheet: "Laporan Warga",
+            });
+            XLSX.writeFile(wb, "Data_Laporan_SAMARA.xlsx");
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
+
+
+
+
